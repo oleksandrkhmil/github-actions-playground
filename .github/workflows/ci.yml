@@ -26,7 +26,7 @@ jobs:
         with:
           version: v1.60
 
-  unit_tests:
+  unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
 
@@ -38,3 +38,16 @@ jobs:
           cache-dependency-path: "**/go.sum"
       - name: Run tests
         run: make test
+
+  detect-secrets:
+    name: Detect Secrets
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: detect-secrets
+        uses: reviewdog/action-detect-secrets@v0.27
+        with:
+          reporter: github-pr-review
+          fail-on-error: true
+          detect_secrets_flags: --exclude-files '.*_test\.go$'
