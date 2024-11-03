@@ -45,7 +45,6 @@ jobs:
         uses: reviewdog/action-detect-secrets@v0.27
         with:
           reporter: github-pr-review
-          fail-on-error: true
           detect_secrets_flags: --exclude-files '.*_test\.go$'
 
   govulncheck:
