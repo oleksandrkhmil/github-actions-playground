@@ -86,7 +86,7 @@ jobs:
         env:
           COVERAGE: ${{ steps.coverage.outputs.COVERAGE }}
         run: |
-          if [ $COVERAGE -lt 80 ]; then
+          if [ $(echo "$COVERAGE < 80" | bc) -eq 1 ]; then
             echo "Coverage ($COVERAGE%) is below the threshold (80%)"
             exit 1
           fi
