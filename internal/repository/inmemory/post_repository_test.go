@@ -41,4 +41,8 @@ func TestBlogRepository(t *testing.T) {
 	resultList, err := blogRepository.GetAll(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, []blog.Post{expectedPost}, resultList)
+
+	resultGetByID, err := blogRepository.GetByID(context.Background(), expectedPost.ID)
+	require.NoError(t, err)
+	assert.Equal(t, expectedPost, resultGetByID)
 }
