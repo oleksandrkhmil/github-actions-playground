@@ -117,3 +117,42 @@ func (c *MockblogServiceGetAllCall) DoAndReturn(f func(context.Context) ([]blog.
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }
+
+// GetByID mocks base method.
+func (m *MockblogService) GetByID(arg0 context.Context, arg1 int64) (blog.Post, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
+	ret0, _ := ret[0].(blog.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByID indicates an expected call of GetByID.
+func (mr *MockblogServiceMockRecorder) GetByID(arg0, arg1 any) *MockblogServiceGetByIDCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockblogService)(nil).GetByID), arg0, arg1)
+	return &MockblogServiceGetByIDCall{Call: call}
+}
+
+// MockblogServiceGetByIDCall wrap *gomock.Call
+type MockblogServiceGetByIDCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockblogServiceGetByIDCall) Return(arg0 blog.Post, arg1 error) *MockblogServiceGetByIDCall {
+	c.Call = c.Call.Return(arg0, arg1)
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockblogServiceGetByIDCall) Do(f func(context.Context, int64) (blog.Post, error)) *MockblogServiceGetByIDCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockblogServiceGetByIDCall) DoAndReturn(f func(context.Context, int64) (blog.Post, error)) *MockblogServiceGetByIDCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}
