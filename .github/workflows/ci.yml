@@ -87,15 +87,16 @@ jobs:
           coverage=$(go tool cover -func=coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
           echo "COVERAGE=$coverage" >> $GITHUB_OUTPUT
           echo "Coverage: $coverage%"
-      - uses: actions/github-script@v7
+      - name: Add comment with coverage
         env:
           COVERAGE: ${{ steps.coverage.outputs.COVERAGE }}
+        uses: actions/github-script@v7
         with:
           script: |
             const {COVERAGE: coverage, TESTS_COVERAGE_THRESHOLD: threshold} = process.env
             const message = coverage < threshold
-              ? `The test coverage (${coverage}%) satisfies the threshold (${threshold}%).`
-              : `The test coverage (${coverage}%) is below the threshold (${threshold}%).`
+              ? `❌ Coverage (${coverage}%) is below the threshold (${threshold}%).`
+              : `✅ Coverage (${coverage}%) satisfies the threshold (${threshold}%).`
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -103,22 +104,12 @@ jobs:
               repo: context.repo.repo,
               body: message,
             })
-      - name: Fail if coverage is below threshold
+      - name: Fail if coverage is below the threshold
         env:
           COVERAGE: ${{ steps.coverage.outputs.COVERAGE }}
-        run: |
-          if [ $(echo "$COVERAGE < 80" | bc) -eq 1 ]; then
-            echo "Coverage ($COVERAGE%) is below the threshold (80%)"
-            # exit 1
-          fi
-      # Left comment from specified user by token
-      # - uses: actions/github-script@v5
-      #   with:
-      #     github-token: ${{ secrets.MY_TOKEN }}
-      #     script: |
-      #       github.rest.issues.createComment({
-      #         issue_number: context.issue.number,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: 'Hello World!'
-      #       })
+        if: ${{ env.COVERAGE < env.TESTS_COVERAGE_THRESHOLD }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {COVERAGE: coverage, TESTS_COVERAGE_THRESHOLD: threshold} = process.env
+            core.setFailed(`Coverage (${coverage}%) is below the threshold (${threshold}%)`)
