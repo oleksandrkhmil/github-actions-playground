@@ -10,6 +10,7 @@ import (
 type repository interface {
 	Create(context.Context, Post) (Post, error)
 	GetAll(context.Context) ([]Post, error)
+	GetByID(context.Context, int64) (Post, error)
 }
 
 type Service struct {
@@ -42,4 +43,13 @@ func (s Service) GetAll(ctx context.Context) ([]Post, error) {
 	}
 
 	return posts, nil
+}
+
+func (s Service) GetByID(ctx context.Context, id int64) (Post, error) {
+	post, err := s.repository.GetByID(ctx, id)
+	if err != nil {
+		return Post{}, fmt.Errorf("get by id: %w", err)
+	}
+
+	return post, nil
 }

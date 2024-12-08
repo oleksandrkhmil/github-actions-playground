@@ -8,6 +8,7 @@ import (
 	"github.com/oleksandrkhmil/github-actions-playground/internal/domain/blog"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 )
 
@@ -85,4 +86,23 @@ func TestService_GetAll(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, expectedList, list)
+}
+
+func TestService_GetByID(t *testing.T) {
+	service, mocks := newService(t)
+
+	expected := blog.Post{
+		ID:        1,
+		Title:     "Any title 2",
+		Tags:      []blog.Tag{{Title: "Personal"}},
+		Content:   "Any content 2",
+		CreatedAt: time.Now(),
+	}
+
+	mocks.repository.EXPECT().GetByID(gomock.Any(), int64(1)).Return(expected, nil)
+
+	actual, err := service.GetByID(context.Background(), 1)
+	require.NoError(t, err)
+
+	assert.Equal(t, expected, actual)
 }
